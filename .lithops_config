@@ -1,0 +1,3 @@
+lithops:
+    storage: localhost
+    mode: localhost
