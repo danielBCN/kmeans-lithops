@@ -85,7 +85,6 @@ class GlobalDelta(object):
         self.parallelism = parallelism
 
     def init(self):
-        # FIXME Hardcoded keys
         self.red.set("delta", 1)
         self.red.set("delta_c", 0)
         self.red.set("delta_temp", 0)

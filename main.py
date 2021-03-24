@@ -22,13 +22,10 @@ def main():
     # #### CONFIGURE ####
     local = False
 
-    redispass = None
-    # redispass = "@4iAgH+WMZ92pgE-"
     redis_conf = {
         'host': 'localhost',
-        # 'host': '35.175.24.57',
         'port': 6379,
-        'password': redispass
+        'password': None
     }
 
     parallelism = 2

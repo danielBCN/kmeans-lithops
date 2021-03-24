@@ -7,11 +7,6 @@ from .objects import GlobalCentroids, GlobalDelta
 from ..redis.barrier import RedisBarrier
 
 
-def distance(point, centroid):
-    """Euclidean squared distance."""
-    return np.linalg.norm(point - centroid)
-
-
 class Worker(object):
 
     def __init__(self, worker_id, data_points, dimensions, parallelism,
@@ -117,23 +112,6 @@ class Worker(object):
         self.local_partition_size = self.local_partition.shape[0]
 
     def compute_clusters(self):
-        # delta = 0
-        # for i in range(0, self.partition_points):
-        #     point = self.local_partition[i]
-        #     distances = ((point - self.correct_centroids) ** 2).sum(axis=1)
-        #     cluster = np.argmin(distances)
-        #
-        #     # add new point to local centroid
-        #     self.local_centroids[cluster] += point
-        #     self.local_sizes[cluster] += 1
-        #
-        #     # If now point is a member of a different cluster
-        #     if self.local_membership[i] != cluster:
-        #         delta += 1
-        #         self.local_membership[i] = cluster
-        #
-        # return delta
-
         points = self.local_partition
         centroids = self.correct_centroids
 

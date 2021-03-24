@@ -2,3 +2,4 @@ redis~=3.5.3
 numpy~=1.20.1
 boto3~=1.17.33
 scipy~=1.6.1
+lithops~=2.3.0

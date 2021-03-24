@@ -10,8 +10,6 @@ class S3Reader(object):
         print(f"s3BUCKET::::::: {self.S3_BUCKET}")
 
         s3 = boto3.resource('s3')
-        # s3 = boto3.resource('s3', aws_access_key_id='xxx',
-        #                     aws_secret_access_key='xxx')
         obj = s3.Object(self.S3_BUCKET, file_name).get()['Body']
 
         points = np.zeros([partition_points, num_dimensions])
@@ -19,7 +17,6 @@ class S3Reader(object):
         lines = 0
         for line in obj.iter_lines():
             dims = (line.decode("utf-8")).split(',')
-            # points.append(list(map(lambda x: float(x), dims)))
             points[lines] = np.array(list(map(lambda x: float(x), dims)))
             lines += 1
 
