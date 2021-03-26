@@ -11,16 +11,17 @@ S3_DIMENSIONS = 100
 
 def train(redis_conf,
           worker_id, data_points, dimensions, parallelism,
-          clusters, max_iters, debug=False):
+          clusters, max_iters, debug, s3_data):
     RedisConn.set_up(**redis_conf)
     worker = Worker(worker_id, data_points, dimensions, parallelism,
-                    clusters, max_iters, THRESHOLD, debug)
+                    clusters, max_iters, THRESHOLD, debug, s3_data)
     return worker.run()  # return time info breakdown
 
 
 def main():
     # #### CONFIGURE ####
     local = False
+    s3_data = False
 
     redis_conf = {
         'host': 'localhost',
@@ -50,14 +51,14 @@ def main():
         worker_breakdown = train(redis_conf,
                                  w_id, parallelism * datapoints_per_worker,
                                  dimensions, parallelism, clusters,
-                                 number_of_iterations, debug)
+                                 number_of_iterations, debug, s3_data)
         worker_stats.append(worker_breakdown)
 
     def lambda_run(w_id):
         return train(redis_conf,
                      w_id, parallelism * datapoints_per_worker,
                      dimensions, parallelism, clusters,
-                     number_of_iterations, debug)
+                     number_of_iterations, debug, s3_data)
 
     if local:
         import threading

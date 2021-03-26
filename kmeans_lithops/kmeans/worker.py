@@ -4,13 +4,15 @@ import numpy as np
 from scipy.spatial.distance import cdist
 
 from .objects import GlobalCentroids, GlobalDelta
+from .s3reader import S3Reader
 from ..redis.barrier import RedisBarrier
 
 
 class Worker(object):
 
     def __init__(self, worker_id, data_points, dimensions, parallelism,
-                 clusters, max_iters, delta_threshold, debug=False):
+                 clusters, max_iters, delta_threshold,
+                 debug=False, s3_data=False):
         self.worker_id = worker_id
         self.num_dimensions = dimensions
         self.num_clusters = clusters
@@ -21,6 +23,7 @@ class Worker(object):
         self.start_partition = self.partition_points * self.worker_id
         self.end_partition = self.partition_points * (worker_id + 1)
         self.debug = debug
+        self.s3_data = s3_data
 
         self.correct_centroids = None
         self.local_partition = None
@@ -104,11 +107,13 @@ class Worker(object):
         #             final]
 
     def load_dataset(self):
-        self.local_partition = np.random.randn(self.partition_points,
-                                               self.num_dimensions)
-        # self.local_partition = S3Reader().get_points(self.worker_id,
-        #                                              self.partition_points,
-        #                                              self.num_dimensions)
+        if self.s3_data:
+            self.local_partition = S3Reader().get_points(self.worker_id,
+                                                         self.partition_points,
+                                                         self.num_dimensions)
+        else:
+            self.local_partition = np.random.randn(self.partition_points,
+                                                   self.num_dimensions)
         self.local_partition_size = self.local_partition.shape[0]
 
     def compute_clusters(self):
